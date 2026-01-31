@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master the ls command - learn to list files, understand permissions, and navigate your Linux filesystem with confidence.">
+    <title>ls Command - List Directory Contents - Linux Knowledge Hub</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .article-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .article-header {
+            margin-bottom: var(--space-xl);
+            padding-bottom: var(--space-md);
+            border-bottom: 2px solid var(--border-color);
+        }
+        .article-meta {
+            display: flex;
+            gap: var(--space-md);
+            margin-top: var(--space-sm);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            flex-wrap: wrap;
+        }
+        .article-content h2 {
+            margin-top: var(--space-xl);
+            padding-top: var(--space-md);
+        }
+        .article-content h3 {
+            margin-top: var(--space-lg);
+        }
+        .command-box {
+            background-color: var(--surface-light);
+            border-left: 4px solid var(--success);
+            padding: var(--space-md);
+            border-radius: var(--radius);
+            margin: var(--space-md) 0;
+        }
+        .command-box code {
+            color: var(--success);
+            font-weight: 600;
+        }
+        .tip-box {
+            background-color: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--success);
+            padding: var(--space-md);
+            border-radius: var(--radius);
+            margin: var(--space-md) 0;
+        }
+        .tip-box strong {
+            color: var(--success);
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: var(--space-xl);
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .back-link:hover {
+            color: var(--primary-dark);
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <h1 class="site-title">Linux Knowledge Hub</h1>
+            <p class="site-tagline">Master Linux, one command at a time</p>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="commands.html" class="active">Commands</a></li>
+                    <li><a href="tips.html">System Tips</a></li>
+                    <li><a href="upgrades.html">Upgrade Tricks</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main class="main-content">
+        <article class="container article-content">
+            <header class="article-header">
+                <h1>ls - List Directory Contents</h1>
+                <div class="article-meta">
+                    <span>📅 January 31, 2026</span>
+                    <span>⏱️ 6 min read</span>
+                    <span>🏷️ Commands</span>
+                    <span>📊 Difficulty: Beginner</span>
+                </div>
+            </header>
+
+            <section>
+                <p>The <code>ls</code> command is probably the first command you'll learn in Linux and one you'll use thousands of times. It's your window into the filesystem, showing you what files and directories exist in any location. Think of it like opening a drawer to see what's inside - but with way more control over how you view the contents.</p>
+            </section>
+
+            <section>
+                <h2>Basic Usage</h2>
+                <p>At its simplest, just type <code>ls</code> and press Enter. This shows you the files and directories in your current location.</p>
+                
+                <div class="command-box">
+                    <code>ls</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Lists files and directories in your current directory</p>
+                </div>
+
+                <p>You'll see a list of names, but not much detail. This basic form is useful for a quick glance, but most of the time you'll want more information.</p>
+            </section>
+
+            <section>
+                <h2>Long Format - The Most Useful Option</h2>
+                <p>The <code>-l</code> flag (lowercase L, not the number 1) gives you the long format, which shows detailed information about each file.</p>
+                
+                <div class="command-box">
+                    <code>ls -l</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Shows detailed information: permissions, owner, size, and modification date</p>
+                </div>
+
+                <p>When you run this, you'll see something like:</p>
+                <div class="command-box">
+                    <code>-rw-r--r-- 1 john users 2048 Jan 31 10:30 document.txt<br>
+drwxr-xr-x 2 john users 4096 Jan 30 15:22 projects</code>
+                </div>
+
+                <p>Let's decode what each column means. The first column shows permissions (who can read, write, or execute the file). The number after that shows how many links point to the file. Then you see the owner's name, the group name, the file size in bytes, when it was last modified, and finally the filename.</p>
+            </section>
+
+            <section>
+                <h2>Show Hidden Files</h2>
+                <p>In Linux, files that start with a dot are hidden. These are usually configuration files. To see them, use the <code>-a</code> flag which stands for "all".</p>
+                
+                <div class="command-box">
+                    <code>ls -a</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Shows all files, including hidden ones that start with a dot</p>
+                </div>
+
+                <p>You'll see files like <code>.bashrc</code>, <code>.profile</code>, and directories like <code>.config</code> that were invisible before. You'll also always see two special entries: <code>.</code> (which represents the current directory) and <code>..</code> (which represents the parent directory).</p>
+            </section>
+
+            <section>
+                <h2>Combining Options - The Power Move</h2>
+                <p>Here's where it gets really useful. You can combine options to get exactly the view you want. The most common combination you'll use is <code>-la</code>.</p>
+                
+                <div class="command-box">
+                    <code>ls -la</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Long format with all files including hidden ones</p>
+                </div>
+
+                <p>This gives you detailed information about every single file in the directory, visible or hidden. It's the command I use probably 50 times a day when working on Linux systems.</p>
+            </section>
+
+            <section>
+                <h2>Human-Readable File Sizes</h2>
+                <p>When you use <code>ls -l</code>, file sizes appear in bytes. A 2GB file shows as 2147483648, which is hard to read at a glance. The <code>-h</code> flag makes sizes human-readable.</p>
+                
+                <div class="command-box">
+                    <code>ls -lh</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Long format with file sizes in KB, MB, GB instead of bytes</p>
+                </div>
+
+                <p>Now that 2GB file appears as "2.0G" and a 500KB file shows as "500K". Much easier to understand at a glance. You can combine this with other options too: <code>ls -lah</code> gives you long format, all files, with human-readable sizes.</p>
+            </section>
+
+            <section>
+                <h2>Listing Specific Directories</h2>
+                <p>You don't have to be in a directory to list its contents. Just put the path after the ls command.</p>
+                
+                <div class="command-box">
+                    <code>ls -l /home</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Lists contents of /home directory without going there</p>
+                </div>
+
+                <div class="command-box">
+                    <code>ls -la ~/Documents</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Lists all files in your Documents folder (~ means your home directory)</p>
+                </div>
+            </section>
+
+            <section>
+                <h2>Recursive Listing</h2>
+                <p>The <code>-R</code> flag (uppercase R) lists everything recursively - meaning it shows the contents of the current directory and all subdirectories.</p>
+                
+                <div class="command-box">
+                    <code>ls -R</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Shows contents of current directory and all subdirectories</p>
+                </div>
+
+                <p>Be careful with this one in large directories like your home folder - it can produce a lot of output! It's most useful when you want to see the complete structure of a project or folder that you know isn't too big.</p>
+            </section>
+
+            <section>
+                <h2>Sorting Options</h2>
+                <p>By default, ls sorts alphabetically. But you can sort by modification time, size, or even reverse the order.</p>
+                
+                <div class="command-box">
+                    <code>ls -lt</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Sorts by modification time, newest first</p>
+                </div>
+
+                <div class="command-box">
+                    <code>ls -lS</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Sorts by file size, largest first (uppercase S)</p>
+                </div>
+
+                <div class="command-box">
+                    <code>ls -ltr</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Sorts by time but reversed, so oldest files first</p>
+                </div>
+
+                <p>These sorting options are incredibly useful. Want to find your largest files? Use <code>ls -lSh</code>. Want to see what you modified most recently? Use <code>ls -lt</code>.</p>
+            </section>
+
+            <section>
+                <h2>Useful Combinations I Use Daily</h2>
+                <p>Here are the combinations I find myself using most often in real work:</p>
+
+                <div class="command-box">
+                    <code>ls -lah</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">My most-used command - shows everything with details and readable sizes</p>
+                </div>
+
+                <div class="command-box">
+                    <code>ls -lth</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">See what was modified recently, great for finding files you just created</p>
+                </div>
+
+                <div class="command-box">
+                    <code>ls -lSh</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Find large files quickly when running out of disk space</p>
+                </div>
+            </section>
+
+            <section>
+                <div class="tip-box">
+                    <p><strong>Pro Tip:</strong> Most people create an alias for their favorite ls command. Add this line to your <code>~/.bashrc</code> file: <code>alias ll='ls -lah'</code>. After reloading your terminal, you can just type <code>ll</code> instead of <code>ls -lah</code>. It saves thousands of keystrokes over time!</p>
+                </div>
+            </section>
+
+            <section>
+                <h2>Practice Exercise</h2>
+                <p>Try these commands to get comfortable with ls:</p>
+                <p>1. Run <code>ls -la</code> in your home directory and find a hidden file (one starting with a dot).</p>
+                <p>2. Use <code>ls -lh</code> in your Downloads folder to see file sizes in human-readable format.</p>
+                <p>3. Run <code>ls -lt</code> to see which file you modified most recently.</p>
+                <p>4. Try <code>ls -R</code> in a small project folder to see its complete structure.</p>
+                <p>The more you use these options, the more natural they'll become. Soon you'll be combining flags without thinking about it!</p>
+            </section>
+
+            <nav style="margin-top: var(--space-xl); padding-top: var(--space-lg); border-top: 1px solid var(--border-color);">
+                <a href="../index.html" class="back-link">← Back to Home</a> | 
+                <a href="commands.html" class="back-link">View All Commands</a>
+            </nav>
+        </article>
+    </main>
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; 2026 Linux Knowledge Hub. Created to help Linux learners worldwide.</p>
+        </div>
+    </footer>
+</body>
+</html>

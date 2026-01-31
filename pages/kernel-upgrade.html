@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn when and how to upgrade your Linux kernel safely, choose the right version, and troubleshoot issues.">
+    <title>Upgrading the Linux Kernel Safely - Linux Knowledge Hub</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .article-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .article-header {
+            margin-bottom: var(--space-xl);
+            padding-bottom: var(--space-md);
+            border-bottom: 2px solid var(--border-color);
+        }
+        .article-meta {
+            display: flex;
+            gap: var(--space-md);
+            margin-top: var(--space-sm);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            flex-wrap: wrap;
+        }
+        .article-content h2 {
+            margin-top: var(--space-xl);
+            padding-top: var(--space-md);
+        }
+        .article-content h3 {
+            margin-top: var(--space-lg);
+        }
+        .command-box {
+            background-color: var(--surface-light);
+            border-left: 4px solid var(--success);
+            padding: var(--space-md);
+            border-radius: var(--radius);
+            margin: var(--space-md) 0;
+        }
+        .command-box code {
+            color: var(--success);
+            font-weight: 600;
+        }
+        .warning-box {
+            background-color: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            padding: var(--space-md);
+            border-radius: var(--radius);
+            margin: var(--space-md) 0;
+        }
+        .warning-box strong {
+            color: #ef4444;
+        }
+        .tip-box {
+            background-color: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--success);
+            padding: var(--space-md);
+            border-radius: var(--radius);
+            margin: var(--space-md) 0;
+        }
+        .tip-box strong {
+            color: var(--success);
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: var(--space-xl);
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .back-link:hover {
+            color: var(--primary-dark);
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <h1 class="site-title">Linux Knowledge Hub</h1>
+            <p class="site-tagline">Master Linux, one command at a time</p>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="commands.html">Commands</a></li>
+                    <li><a href="tips.html">System Tips</a></li>
+                    <li><a href="upgrades.html" class="active">Upgrade Tricks</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main class="main-content">
+        <article class="container article-content">
+            <header class="article-header">
+                <h1>Upgrading the Linux Kernel Safely</h1>
+                <div class="article-meta">
+                    <span>📅 January 31, 2026</span>
+                    <span>⏱️ 10 min read</span>
+                    <span>🏷️ Upgrade Tricks</span>
+                    <span>📊 Difficulty: Advanced</span>
+                </div>
+            </header>
+
+            <section>
+                <p>The Linux kernel is the core of your operating system - it's the bridge between your hardware and software. Upgrading it can bring better hardware support, improved performance, security fixes, and new features. But kernel upgrades also carry risk since a broken kernel means an unbootable system. This guide shows you how to upgrade safely with fallback options.</p>
+            </section>
+
+            <section>
+                <h2>Understanding Kernel Versions</h2>
+                <p>First, let's check what kernel you're currently running:</p>
+
+                <div class="command-box">
+                    <code>uname -r</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Shows your current kernel version</p>
+                </div>
+
+                <p>You'll see something like <code>5.15.0-91-generic</code> or <code>6.5.0-14-generic</code>. Let's decode this:</p>
+
+                <p><strong>5.15.0-91-generic</strong> breaks down as:</p>
+                <p>• <strong>5</strong> = Major version</p>
+                <p>• <strong>15</strong> = Minor version (5.15 is the kernel series)</p>
+                <p>• <strong>0</strong> = Patch level</p>
+                <p>• <strong>91</strong> = Ubuntu/distribution-specific build number</p>
+                <p>• <strong>generic</strong> = Kernel flavor (generic works for most systems)</p>
+            </section>
+
+            <section>
+                <h2>Should You Upgrade Your Kernel?</h2>
+                <p>You don't always need to upgrade. Here's when you should consider it:</p>
+
+                <p><strong>Good reasons to upgrade:</strong></p>
+                <p>• Your hardware isn't working (new laptop, graphics card, WiFi adapter)</p>
+                <p>• You need a security fix that's only in newer kernels</p>
+                <p>• You want better performance or new features</p>
+                <p>• Your distribution recommends it</p>
+
+                <p><strong>Reasons NOT to upgrade:</strong></p>
+                <p>• Everything is working perfectly</p>
+                <p>• You're on an LTS (Long Term Support) kernel that gets security updates</p>
+                <p>• You need maximum stability for critical work</p>
+
+                <div class="tip-box">
+                    <p><strong>Golden Rule:</strong> If it ain't broke, don't fix it. Many users run the same kernel for years with no issues. Only upgrade if you have a specific reason.</p>
+                </div>
+            </section>
+
+            <section>
+                <h2>Method 1: Using Your Distribution's Kernel (Safest)</h2>
+                <p>The safest way is to upgrade through your distribution's package manager. These kernels are tested specifically for your distribution.</p>
+
+                <h3>Ubuntu/Mint/Debian:</h3>
+                <p>Regular system updates include kernel updates:</p>
+
+                <div class="command-box">
+                    <code>sudo apt update<br>
+sudo apt upgrade</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Upgrades kernel if a new version is available</p>
+                </div>
+
+                <p>To see available kernels:</p>
+
+                <div class="command-box">
+                    <code>apt search linux-image</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Lists all available kernel packages</p>
+                </div>
+
+                <p>To install a specific kernel version:</p>
+
+                <div class="command-box">
+                    <code>sudo apt install linux-image-6.5.0-14-generic</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Replace with desired version number</p>
+                </div>
+            </section>
+
+            <section>
+                <h2>Method 2: Ubuntu Mainline Kernel (Newer Versions)</h2>
+                <p>If you need a newer kernel than your distribution provides, you can use the mainline kernel PPA. This gives you the latest stable kernels directly from kernel.org.</p>
+
+                <div class="warning-box">
+                    <p><strong>Warning:</strong> Mainline kernels are less tested than distribution kernels. Only use these if you have a specific need (like new hardware support).</p>
+                </div>
+
+                <p>The easiest way is using the Mainline GUI tool:</p>
+
+                <div class="command-box">
+                    <code>sudo add-apt-repository ppa:cappelikan/ppa<br>
+sudo apt update<br>
+sudo apt install mainline</code>
+                </div>
+
+                <p>Then launch Mainline from your applications menu. It shows available kernels with a simple interface - just select the version you want and click Install.</p>
+            </section>
+
+            <section>
+                <h2>After Installing a New Kernel</h2>
+                <p>After installation, you MUST reboot for the new kernel to take effect:</p>
+
+                <div class="command-box">
+                    <code>sudo reboot</code>
+                </div>
+
+                <p>After reboot, verify you're running the new kernel:</p>
+
+                <div class="command-box">
+                    <code>uname -r</code>
+                </div>
+
+                <p>Test everything! Check that:</p>
+                <p>• WiFi works</p>
+                <p>• Graphics display properly</p>
+                <p>• Sound works</p>
+                <p>• USB devices are recognized</p>
+                <p>• Any special hardware you use functions</p>
+
+                <p>If everything works, great! If not, see the rollback section below.</p>
+            </section>
+
+            <section>
+                <h2>Rolling Back to Previous Kernel</h2>
+                <p>This is why we never delete old kernels immediately! If the new kernel has problems, you can boot into an old one.</p>
+
+                <h3>Boot into Old Kernel:</h3>
+                <p>1. Reboot your computer</p>
+                <p>2. Hold Shift during boot to show the Grub menu</p>
+                <p>3. Select "Advanced options for Ubuntu" (or your distribution)</p>
+                <p>4. Choose a previous kernel version from the list</p>
+                <p>5. Boot into it</p>
+
+                <p>If the old kernel works fine, you can make it the default or remove the problematic new kernel.</p>
+
+                <h3>Remove a Bad Kernel:</h3>
+                <p>First, boot into a working kernel, then:</p>
+
+                <div class="command-box">
+                    <code>dpkg --list | grep linux-image</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Lists all installed kernels</p>
+                </div>
+
+                <div class="command-box">
+                    <code>sudo apt remove linux-image-6.5.0-14-generic</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Removes the problematic kernel</p>
+                </div>
+
+                <div class="command-box">
+                    <code>sudo update-grub</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Updates boot menu</p>
+                </div>
+            </section>
+
+            <section>
+                <h2>Managing Multiple Kernels</h2>
+                <p>It's good practice to keep 2-3 kernel versions installed: your current one and 1-2 previous versions as backups.</p>
+
+                <p>To see all installed kernels:</p>
+
+                <div class="command-box">
+                    <code>dpkg --list | grep linux-image</code>
+                </div>
+
+                <p>To remove old kernels you don't need (but keep at least one backup!):</p>
+
+                <div class="command-box">
+                    <code>sudo apt autoremove --purge</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Automatically removes old kernels except current and previous</p>
+                </div>
+
+                <div class="tip-box">
+                    <p><strong>Space-Saving Tip:</strong> Each kernel uses about 200-300MB. If you're low on disk space, you can safely remove kernels older than the last 2-3 versions. Just make sure you're NOT removing the kernel you're currently running (check with <code>uname -r</code>)!</p>
+                </div>
+            </section>
+
+            <section>
+                <h2>Kernel Upgrade Troubleshooting</h2>
+
+                <h3>System Won't Boot After Kernel Upgrade</h3>
+                <p>1. Reboot and access Grub menu (hold Shift)</p>
+                <p>2. Select "Advanced options"</p>
+                <p>3. Boot into previous kernel</p>
+                <p>4. Remove the new kernel as shown above</p>
+
+                <h3>Graphics Issues (Black Screen, Low Resolution)</h3>
+                <p>The new kernel might not work with your graphics drivers. At Grub menu:</p>
+                <p>1. Press 'e' to edit boot options</p>
+                <p>2. Find the line starting with "linux"</p>
+                <p>3. Add <code>nomodeset</code> at the end</p>
+                <p>4. Press Ctrl+X to boot</p>
+                <p>5. If this works, you may need to reinstall graphics drivers for the new kernel</p>
+
+                <h3>WiFi or Hardware Not Working</h3>
+                <p>New kernels sometimes need firmware updates:</p>
+
+                <div class="command-box">
+                    <code>sudo apt install linux-firmware</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Updates firmware for hardware devices</p>
+                </div>
+
+                <p>Then reboot and test again.</p>
+            </section>
+
+            <section>
+                <h2>Checking for Kernel Updates</h2>
+                <p>To see if newer kernels are available without installing:</p>
+
+                <div class="command-box">
+                    <code>apt list --upgradable | grep linux-image</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Shows available kernel upgrades</p>
+                </div>
+
+                <p>You can also check the Ubuntu mainline kernel page to see the absolute latest:</p>
+                <p>https://kernel.ubuntu.com/mainline/</p>
+            </section>
+
+            <section>
+                <h2>Best Practices for Kernel Upgrades</h2>
+
+                <p><strong>1. Read changelogs:</strong> Before upgrading, check what's new. Look for your hardware brand in the changelog.</p>
+
+                <p><strong>2. Backup first:</strong> Create a Timeshift snapshot before kernel upgrades. If things break, you can restore completely.</p>
+
+                <p><strong>3. Don't remove old kernels immediately:</strong> Keep them for at least a week until you're sure the new one is stable.</p>
+
+                <p><strong>4. Upgrade when you have time:</strong> Don't upgrade right before important work. Do it when you have time to troubleshoot if needed.</p>
+
+                <p><strong>5. Check community feedback:</strong> Search forums for your hardware + the new kernel version. See if others reported issues.</p>
+
+                <p><strong>6. Stay on LTS kernels for stability:</strong> If you need maximum stability, stick with LTS (Long Term Support) kernel series. They get security updates for years.</p>
+            </section>
+
+            <section>
+                <div class="warning-box">
+                    <p><strong>Critical Reminder:</strong> Never, ever delete ALL your kernels at once. Always keep at least two versions installed. Without a kernel, your system cannot boot at all, and recovery requires a live USB.</p>
+                </div>
+            </section>
+
+            <nav style="margin-top: var(--space-xl); padding-top: var(--space-lg); border-top: 1px solid var(--border-color);">
+                <a href="../index.html" class="back-link">← Back to Home</a> | 
+                <a href="upgrades.html" class="back-link">View All Upgrade Guides</a>
+            </nav>
+        </article>
+    </main>
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; 2026 Linux Knowledge Hub. Created to help Linux learners worldwide.</p>
+        </div>
+    </footer>
+</body>
+</html>

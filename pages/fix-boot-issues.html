@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Step-by-step guide to fix boot issues and repair Grub bootloader in Linux.">
+    <title>Fixing Boot Issues and Grub Problems - Linux Knowledge Hub</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .article-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .article-header {
+            margin-bottom: var(--space-xl);
+            padding-bottom: var(--space-md);
+            border-bottom: 2px solid var(--border-color);
+        }
+        .article-meta {
+            display: flex;
+            gap: var(--space-md);
+            margin-top: var(--space-sm);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            flex-wrap: wrap;
+        }
+        .article-content h2 {
+            margin-top: var(--space-xl);
+            padding-top: var(--space-md);
+        }
+        .article-content h3 {
+            margin-top: var(--space-lg);
+        }
+        .command-box {
+            background-color: var(--surface-light);
+            border-left: 4px solid var(--success);
+            padding: var(--space-md);
+            border-radius: var(--radius);
+            margin: var(--space-md) 0;
+        }
+        .command-box code {
+            color: var(--success);
+            font-weight: 600;
+        }
+        .warning-box {
+            background-color: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            padding: var(--space-md);
+            border-radius: var(--radius);
+            margin: var(--space-md) 0;
+        }
+        .warning-box strong {
+            color: #ef4444;
+        }
+        .tip-box {
+            background-color: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--success);
+            padding: var(--space-md);
+            border-radius: var(--radius);
+            margin: var(--space-md) 0;
+        }
+        .tip-box strong {
+            color: var(--success);
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: var(--space-xl);
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .back-link:hover {
+            color: var(--primary-dark);
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <h1 class="site-title">Linux Knowledge Hub</h1>
+            <p class="site-tagline">Master Linux, one command at a time</p>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="commands.html">Commands</a></li>
+                    <li><a href="tips.html" class="active">System Tips</a></li>
+                    <li><a href="upgrades.html">Upgrade Tricks</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main class="main-content">
+        <article class="container article-content">
+            <header class="article-header">
+                <h1>Fixing Boot Issues and Grub Problems</h1>
+                <div class="article-meta">
+                    <span>📅 January 31, 2026</span>
+                    <span>⏱️ 10 min read</span>
+                    <span>🏷️ System Tips</span>
+                    <span>📊 Difficulty: Intermediate</span>
+                </div>
+            </header>
+
+            <section>
+                <p>Few things are more panic-inducing than turning on your computer and seeing "GRUB rescue>" or "Operating System not found" instead of your familiar login screen. But don't worry - most boot issues can be fixed, and this guide will walk you through the most common problems and their solutions.</p>
+            </section>
+
+            <section>
+                <h2>Understanding Grub</h2>
+                <p>Grub (Grand Unified Bootloader) is the program that runs when you turn on your computer and lets you choose which operating system to boot. It sits on your hard drive's boot sector and loads before any OS starts. When it breaks, your computer can't find or load Linux (or Windows if you're dual-booting).</p>
+                
+                <p>Common causes of Grub problems include Windows updates (which often overwrite the bootloader), power failures during updates, disk errors, or accidentally deleting important files.</p>
+            </section>
+
+            <section>
+                <h2>Preparation: Create a Live USB</h2>
+                <p>To fix boot problems, you'll need a Linux live USB. If you're reading this after your system already won't boot, you'll need to create this on another computer.</p>
+
+                <div class="tip-box">
+                    <p><strong>Prevention Tip:</strong> Keep a Linux Mint or Ubuntu live USB ready at all times. It's your emergency toolkit for when things go wrong. You can use the same USB you used to install Linux originally.</p>
+                </div>
+            </section>
+
+            <section>
+                <h2>Solution 1: Repair Grub from Live USB</h2>
+                <p>This is the most common fix and solves about 80% of boot problems. Boot from your live USB and open a terminal.</p>
+
+                <h3>Step 1: Identify Your Linux Partition</h3>
+                <p>First, you need to find which partition contains your Linux installation.</p>
+
+                <div class="command-box">
+                    <code>sudo fdisk -l</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Lists all partitions - look for your Linux partition (usually the largest ext4 partition)</p>
+                </div>
+
+                <p>You'll see output like /dev/sda1, /dev/sda2, etc. Look for the one that's type "Linux" or "Linux filesystem" and is large enough to be your main system (probably 20GB or more). Let's say it's /dev/sda2 for this example.</p>
+
+                <h3>Step 2: Mount Your Linux Partition</h3>
+
+                <div class="command-box">
+                    <code>sudo mount /dev/sda2 /mnt</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Replace sda2 with your actual partition</p>
+                </div>
+
+                <h3>Step 3: Mount Essential Directories</h3>
+                <p>These commands give the repair tools access to your system's essential directories:</p>
+
+                <div class="command-box">
+                    <code>sudo mount --bind /dev /mnt/dev<br>
+sudo mount --bind /proc /mnt/proc<br>
+sudo mount --bind /sys /mnt/sys</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Mounts special filesystems needed for Grub repair</p>
+                </div>
+
+                <h3>Step 4: Enter Your System</h3>
+
+                <div class="command-box">
+                    <code>sudo chroot /mnt</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">This makes the live USB act like it's running your installed system</p>
+                </div>
+
+                <h3>Step 5: Reinstall Grub</h3>
+
+                <div class="command-box">
+                    <code>grub-install /dev/sda</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Installs Grub to your hard drive (use sda, NOT sda1 or sda2)</p>
+                </div>
+
+                <div class="command-box">
+                    <code>update-grub</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Updates Grub configuration to detect all operating systems</p>
+                </div>
+
+                <h3>Step 6: Exit and Reboot</h3>
+
+                <div class="command-box">
+                    <code>exit<br>
+sudo reboot</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Exit chroot and restart - remove the USB when prompted</p>
+                </div>
+
+                <p>Your system should now boot normally!</p>
+            </section>
+
+            <section>
+                <h2>Solution 2: Using Boot Repair Tool (Easiest Method)</h2>
+                <p>If manually repairing Grub seems complicated, Boot Repair is an automated tool that fixes most boot problems with a single click.</p>
+
+                <p>Boot from your live USB and run these commands:</p>
+
+                <div class="command-box">
+                    <code>sudo add-apt-repository ppa:yannubuntu/boot-repair<br>
+sudo apt update<br>
+sudo apt install boot-repair<br>
+boot-repair</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Installs and launches Boot Repair tool</p>
+                </div>
+
+                <p>When Boot Repair opens, click "Recommended repair" and let it do its magic. It will analyze your system, fix Grub, and usually solve the problem automatically. The tool will show you a summary URL at the end - save this in case you need help from forums later.</p>
+            </section>
+
+            <section>
+                <h2>Solution 3: Fixing "grub rescue>" Prompt</h2>
+                <p>If you see the "grub rescue>" prompt instead of your normal Grub menu, it means Grub found itself but can't find its configuration files. You can boot manually:</p>
+
+                <div class="command-box">
+                    <code>ls</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">At the grub rescue prompt, this shows your partitions</p>
+                </div>
+
+                <p>You'll see output like (hd0), (hd0,msdos1), (hd0,msdos2), etc. Try each one to find your Linux partition:</p>
+
+                <div class="command-box">
+                    <code>ls (hd0,msdos1)/</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Look for directories like home, boot, etc, usr</p>
+                </div>
+
+                <p>When you find the right partition (let's say it's hd0,msdos2), set it and boot:</p>
+
+                <div class="command-box">
+                    <code>set prefix=(hd0,msdos2)/boot/grub<br>
+set root=(hd0,msdos2)<br>
+insmod normal<br>
+normal</code>
+                </div>
+
+                <p>This should boot you into Linux. Once you're in, open a terminal and run:</p>
+
+                <div class="command-box">
+                    <code>sudo update-grub<br>
+sudo grub-install /dev/sda</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Permanently fixes Grub so you don't need to do this again</p>
+                </div>
+            </section>
+
+            <section>
+                <h2>Solution 4: Dual Boot - Windows Overwrote Grub</h2>
+                <p>This is extremely common. Windows updates love to overwrite Grub and make Windows the only bootable OS. The fix is the same as Solution 1 (repair Grub from live USB), but make sure you run update-grub at the end - this will detect Windows and add it back to your boot menu.</p>
+
+                <div class="tip-box">
+                    <p><strong>Pro Tip:</strong> After fixing this, you might want to set Grub as your default bootloader in your BIOS/UEFI settings. Go into BIOS (usually by pressing F2, F12, or Del during startup) and look for boot order settings. Make sure "ubuntu" or your Linux bootloader is listed before "Windows Boot Manager".</p>
+                </div>
+            </section>
+
+            <section>
+                <h2>Solution 5: Access Recovery Mode</h2>
+                <p>If your system boots to Grub menu but won't start Linux properly, you can use recovery mode:</p>
+
+                <p>1. At the Grub menu, select "Advanced options for Ubuntu" (or your distribution)</p>
+                <p>2. Choose the entry that says "recovery mode"</p>
+                <p>3. Select "root - Drop to root shell prompt"</p>
+                <p>4. You'll get a root terminal where you can fix issues</p>
+
+                <p>From recovery mode, you can check disk errors:</p>
+
+                <div class="command-box">
+                    <code>fsck -f /dev/sda2</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Checks and repairs filesystem errors (replace sda2 with your partition)</p>
+                </div>
+
+                <div class="warning-box">
+                    <p><strong>Important:</strong> Only run fsck on unmounted partitions! Recovery mode should automatically mount partitions read-only, which is safe for fsck. If you get errors about the partition being mounted, you may need to boot from live USB instead.</p>
+                </div>
+            </section>
+
+            <section>
+                <h2>Common Error Messages and What They Mean</h2>
+                
+                <p><strong>"error: no such partition"</strong> - Grub can't find the partition it's looking for. Usually means partition numbers changed (maybe you deleted or created partitions). Solution: Repair Grub from live USB.</p>
+
+                <p><strong>"Operating System not found"</strong> - BIOS can't find any bootloader at all. Check BIOS boot order settings, or the hard drive might be failing.</p>
+
+                <p><strong>"grub rescue>"</strong> - Grub started but can't find its config files. Use Solution 3 above to manually boot, then reinstall Grub.</p>
+
+                <p><strong>Black screen with blinking cursor</strong> - Could be graphics driver issue or kernel panic. Try recovery mode or boot with "nomodeset" option (press 'e' at Grub menu, add nomodeset to the linux line).</p>
+            </section>
+
+            <section>
+                <h2>Prevention: How to Avoid Boot Problems</h2>
+                
+                <p><strong>1. Keep a live USB handy:</strong> Always have a bootable Linux USB ready. It's your repair toolkit.</p>
+
+                <p><strong>2. Backup your /boot/grub folder:</strong> Occasionally copy it to a safe place:</p>
+
+                <div class="command-box">
+                    <code>sudo cp -r /boot/grub ~/grub-backup</code>
+                </div>
+
+                <p><strong>3. Be careful with partitioning:</strong> Don't delete or resize partitions unless you know what you're doing and have backups.</p>
+
+                <p><strong>4. Update carefully:</strong> Don't interrupt system updates or power off during kernel updates.</p>
+
+                <p><strong>5. Use Timeshift:</strong> System snapshots let you roll back if an update breaks booting.</p>
+            </section>
+
+            <section>
+                <div class="tip-box">
+                    <p><strong>Emergency Tip:</strong> If you urgently need to access your files but can't fix the boot, just boot from a live USB and mount your partition. Your files are still there and accessible even if the system won't boot! Mount with <code>sudo mount /dev/sda2 /mnt</code> and your files are in /mnt/home/yourusername/</p>
+                </div>
+            </section>
+
+            <nav style="margin-top: var(--space-xl); padding-top: var(--space-lg); border-top: 1px solid var(--border-color);">
+                <a href="../index.html" class="back-link">← Back to Home</a> | 
+                <a href="tips.html" class="back-link">View All Tips</a>
+            </nav>
+        </article>
+    </main>
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; 2026 Linux Knowledge Hub. Created to help Linux learners worldwide.</p>
+        </div>
+    </footer>
+</body>
+</html>

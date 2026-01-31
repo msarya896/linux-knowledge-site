@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn how to recover accidentally deleted files in Linux using multiple methods from simple trash recovery to advanced tools.">
+    <title>Recover Accidentally Deleted Files - Linux Knowledge Hub</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .article-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .article-header {
+            margin-bottom: var(--space-xl);
+            padding-bottom: var(--space-md);
+            border-bottom: 2px solid var(--border-color);
+        }
+        .article-meta {
+            display: flex;
+            gap: var(--space-md);
+            margin-top: var(--space-sm);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            flex-wrap: wrap;
+        }
+        .article-content h2 {
+            margin-top: var(--space-xl);
+            padding-top: var(--space-md);
+        }
+        .article-content h3 {
+            margin-top: var(--space-lg);
+        }
+        .command-box {
+            background-color: var(--surface-light);
+            border-left: 4px solid var(--success);
+            padding: var(--space-md);
+            border-radius: var(--radius);
+            margin: var(--space-md) 0;
+        }
+        .command-box code {
+            color: var(--success);
+            font-weight: 600;
+        }
+        .warning-box {
+            background-color: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            padding: var(--space-md);
+            border-radius: var(--radius);
+            margin: var(--space-md) 0;
+        }
+        .warning-box strong {
+            color: #ef4444;
+        }
+        .tip-box {
+            background-color: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--success);
+            padding: var(--space-md);
+            border-radius: var(--radius);
+            margin: var(--space-md) 0;
+        }
+        .tip-box strong {
+            color: var(--success);
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: var(--space-xl);
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .back-link:hover {
+            color: var(--primary-dark);
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <h1 class="site-title">Linux Knowledge Hub</h1>
+            <p class="site-tagline">Master Linux, one command at a time</p>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="commands.html">Commands</a></li>
+                    <li><a href="tips.html" class="active">System Tips</a></li>
+                    <li><a href="upgrades.html">Upgrade Tricks</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main class="main-content">
+        <article class="container article-content">
+            <header class="article-header">
+                <h1>How to Recover Accidentally Deleted Files</h1>
+                <div class="article-meta">
+                    <span>📅 January 31, 2026</span>
+                    <span>⏱️ 8 min read</span>
+                    <span>🏷️ System Tips</span>
+                    <span>📊 Difficulty: Intermediate</span>
+                </div>
+            </header>
+
+            <section>
+                <p>We've all been there - you run <code>rm</code> on a file and immediately realize you just deleted something important. Your heart sinks. But don't panic! Depending on how you deleted the file and how quickly you act, there's a good chance you can get it back.</p>
+            </section>
+
+            <section>
+                <div class="warning-box">
+                    <p><strong>Critical First Step:</strong> If you've deleted an important file, stop using the system immediately. The more you write to the disk, the lower your chances of recovery. Every new file you create might overwrite the deleted data. If it's really critical, consider shutting down and booting from a live USB to attempt recovery.</p>
+                </div>
+            </section>
+
+            <section>
+                <h2>Method 1: Check the Trash First</h2>
+                <p>This might seem obvious, but it's always worth checking. If you deleted the file using your file manager (by clicking delete or pressing Delete key), it's probably in the trash and can be restored instantly.</p>
+
+                <p>In most Linux desktop environments, you can access trash from your file manager or by navigating to this location:</p>
+
+                <div class="command-box">
+                    <code>ls ~/.local/share/Trash/files/</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">List all files currently in your trash</p>
+                </div>
+
+                <p>To restore a file from the command line:</p>
+
+                <div class="command-box">
+                    <code>mv ~/.local/share/Trash/files/myfile.txt ~/Documents/</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Move the file from trash back to your Documents folder</p>
+                </div>
+
+                <p>However, if you used the <code>rm</code> command or pressed Shift+Delete, the file bypassed the trash completely. In that case, move to the next methods.</p>
+            </section>
+
+            <section>
+                <h2>Method 2: Restore from Backup</h2>
+                <p>If you have a backup system in place (and you should!), this is your best bet. Common Linux backup tools include:</p>
+
+                <p><strong>Timeshift:</strong> If you're using Timeshift for system snapshots, you can browse to the snapshot and copy your file back.</p>
+
+                <div class="command-box">
+                    <code>sudo timeshift --list</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">See all available Timeshift snapshots</p>
+                </div>
+
+                <p><strong>Deja Dup (Backups):</strong> If you're using the default GNOME backup tool, open the Backups application and use the "Restore" option to find your file.</p>
+
+                <p><strong>Manual Backups:</strong> If you keep manual backups on external drives or cloud storage, check there for a recent copy of your file.</p>
+            </section>
+
+            <section>
+                <h2>Method 3: Using TestDisk and PhotoRec</h2>
+                <p>If the file truly is deleted and you don't have a backup, TestDisk and PhotoRec are your recovery tools. PhotoRec can recover files from hard drives, USB drives, and memory cards even if the filesystem is damaged.</p>
+
+                <p>First, install the tools:</p>
+
+                <div class="command-box">
+                    <code>sudo apt install testdisk</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">On Ubuntu/Mint - this installs both TestDisk and PhotoRec</p>
+                </div>
+
+                <p>Or for Fedora-based systems:</p>
+
+                <div class="command-box">
+                    <code>sudo dnf install testdisk</code>
+                </div>
+
+                <h3>Using PhotoRec</h3>
+                <p>PhotoRec is particularly good at recovering files based on their file signatures. It doesn't need a working filesystem - it scans the raw disk data.</p>
+
+                <div class="warning-box">
+                    <p><strong>Important:</strong> Never recover files to the same drive you're recovering from. Use an external drive or different partition, or you risk overwriting the very data you're trying to recover.</p>
+                </div>
+
+                <div class="command-box">
+                    <code>sudo photorec</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Launch PhotoRec recovery tool</p>
+                </div>
+
+                <p>PhotoRec will guide you through:</p>
+                <p>1. Selecting the disk that contained the deleted file</p>
+                <p>2. Choosing the partition or whole disk to scan</p>
+                <p>3. Selecting the file types you want to recover (or all files)</p>
+                <p>4. Choosing where to save recovered files (remember: different drive!)</p>
+
+                <p>The scan can take a while depending on drive size. PhotoRec will recover files to numbered directories. You'll need to look through them to find your file - they won't have their original names.</p>
+            </section>
+
+            <section>
+                <h2>Method 4: Using Extundelete (for ext3/ext4 filesystems)</h2>
+                <p>If you're using an ext3 or ext4 filesystem (which is common on Linux), extundelete is a specialized recovery tool.</p>
+
+                <div class="command-box">
+                    <code>sudo apt install extundelete</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Install extundelete on Ubuntu/Mint</p>
+                </div>
+
+                <p>First, you need to identify your partition. Use <code>df -h</code> to see mounted partitions, or <code>lsblk</code> to see all block devices.</p>
+
+                <p>Then unmount the partition (you can't recover from a mounted partition):</p>
+
+                <div class="command-box">
+                    <code>sudo umount /dev/sda1</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Replace sda1 with your actual partition</p>
+                </div>
+
+                <p>To restore a specific file if you know its name:</p>
+
+                <div class="command-box">
+                    <code>sudo extundelete /dev/sda1 --restore-file path/to/deleted/file.txt</code>
+                </div>
+
+                <p>To restore all deleted files from a directory:</p>
+
+                <div class="command-box">
+                    <code>sudo extundelete /dev/sda1 --restore-directory path/to/directory</code>
+                </div>
+
+                <p>Recovered files will be placed in a directory called RECOVERED_FILES in your current location.</p>
+            </section>
+
+            <section>
+                <h2>Method 5: Check if the File is Still Open</h2>
+                <p>Here's a clever trick - if you deleted a file that's currently open in a program, the file still exists in memory and you can recover it!</p>
+
+                <p>First, find the process that has the file open:</p>
+
+                <div class="command-box">
+                    <code>lsof | grep deleted</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Lists all open files marked as deleted</p>
+                </div>
+
+                <p>You'll see output showing the process ID (PID) and a file descriptor. The file still exists at:</p>
+
+                <div class="command-box">
+                    <code>/proc/[PID]/fd/[file descriptor number]</code>
+                </div>
+
+                <p>You can copy it back:</p>
+
+                <div class="command-box">
+                    <code>cp /proc/12345/fd/3 ~/recovered-file.txt</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Replace 12345 with actual PID and 3 with actual fd number</p>
+                </div>
+
+                <p>This only works while the program is still running. Once you close the program, the file is truly gone from memory.</p>
+            </section>
+
+            <section>
+                <h2>Prevention: Better Than Recovery</h2>
+                <p>The best recovery is prevention. Here are some habits that will save you from future disasters:</p>
+
+                <p><strong>1. Use trash instead of rm:</strong> Create an alias in your ~/.bashrc:</p>
+
+                <div class="command-box">
+                    <code>alias rm='rm -i'</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">This makes rm ask for confirmation before deleting</p>
+                </div>
+
+                <p>Or better yet, use trash-cli which moves files to trash:</p>
+
+                <div class="command-box">
+                    <code>sudo apt install trash-cli<br>alias rm='trash-put'</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Now "rm" actually moves files to trash where they can be recovered</p>
+                </div>
+
+                <p><strong>2. Set up automatic backups:</strong> Use tools like Timeshift for system snapshots or Deja Dup for user files. Set them to run automatically so you don't have to remember.</p>
+
+                <p><strong>3. Version control for code:</strong> If you're working with code or documents, use Git. Even for personal projects, having history is invaluable.</p>
+
+                <p><strong>4. Cloud sync for important files:</strong> Services like Nextcloud, Syncthing, or even commercial options provide automatic backup and sync.</p>
+            </section>
+
+            <section>
+                <div class="tip-box">
+                    <p><strong>Pro Tip:</strong> Before running any destructive command (rm, dd, etc.), take a breath and read the entire command twice. Ask yourself "What will this actually do?" It takes 5 seconds but can save hours of recovery work. And if you're running a command with wildcards (like *.txt), first run it with <code>ls</code> instead to see what it would affect: <code>ls *.txt</code> before <code>rm *.txt</code>.</p>
+                </div>
+            </section>
+
+            <section>
+                <h2>Summary: Your Recovery Checklist</h2>
+                <p>When you delete a file, work through this checklist in order:</p>
+                <p>1. Check the trash (fastest and easiest)</p>
+                <p>2. Check your backups (if you have them)</p>
+                <p>3. See if the file is still open in a program</p>
+                <p>4. Stop using the system to prevent overwriting</p>
+                <p>5. Use PhotoRec or extundelete for deep recovery</p>
+                <p>6. Learn from the experience and set up preventive measures</p>
+
+                <p>Remember, the sooner you act after deletion, the better your chances. And the best recovery method is the one you never need because you have good backups!</p>
+            </section>
+
+            <nav style="margin-top: var(--space-xl); padding-top: var(--space-lg); border-top: 1px solid var(--border-color);">
+                <a href="../index.html" class="back-link">← Back to Home</a> | 
+                <a href="tips.html" class="back-link">View All Tips</a>
+            </nav>
+        </article>
+    </main>
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; 2026 Linux Knowledge Hub. Created to help Linux learners worldwide.</p>
+        </div>
+    </footer>
+</body>
+</html>

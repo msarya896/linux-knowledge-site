@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn how to free up disk space when your Linux system is full - find large files, clean caches, and reclaim storage.">
+    <title>Free Up Disk Space When Your System is Full - Linux Knowledge Hub</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .article-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .article-header {
+            margin-bottom: var(--space-xl);
+            padding-bottom: var(--space-md);
+            border-bottom: 2px solid var(--border-color);
+        }
+        .article-meta {
+            display: flex;
+            gap: var(--space-md);
+            margin-top: var(--space-sm);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            flex-wrap: wrap;
+        }
+        .article-content h2 {
+            margin-top: var(--space-xl);
+            padding-top: var(--space-md);
+        }
+        .article-content h3 {
+            margin-top: var(--space-lg);
+        }
+        .command-box {
+            background-color: var(--surface-light);
+            border-left: 4px solid var(--success);
+            padding: var(--space-md);
+            border-radius: var(--radius);
+            margin: var(--space-md) 0;
+        }
+        .command-box code {
+            color: var(--success);
+            font-weight: 600;
+        }
+        .warning-box {
+            background-color: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            padding: var(--space-md);
+            border-radius: var(--radius);
+            margin: var(--space-md) 0;
+        }
+        .warning-box strong {
+            color: #ef4444;
+        }
+        .tip-box {
+            background-color: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--success);
+            padding: var(--space-md);
+            border-radius: var(--radius);
+            margin: var(--space-md) 0;
+        }
+        .tip-box strong {
+            color: var(--success);
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: var(--space-xl);
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .back-link:hover {
+            color: var(--primary-dark);
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <h1 class="site-title">Linux Knowledge Hub</h1>
+            <p class="site-tagline">Master Linux, one command at a time</p>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="commands.html">Commands</a></li>
+                    <li><a href="tips.html" class="active">System Tips</a></li>
+                    <li><a href="upgrades.html">Upgrade Tricks</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main class="main-content">
+        <article class="container article-content">
+            <header class="article-header">
+                <h1>Free Up Disk Space When Your System is Full</h1>
+                <div class="article-meta">
+                    <span>📅 January 31, 2026</span>
+                    <span>⏱️ 7 min read</span>
+                    <span>🏷️ System Tips</span>
+                    <span>📊 Difficulty: Beginner</span>
+                </div>
+            </header>
+
+            <section>
+                <p>You're working on your system when suddenly you get a warning: "Low disk space" or worse, your system starts acting slow and strange because the disk is completely full. Don't panic! This guide will show you how to quickly find what's eating your storage and reclaim precious gigabytes.</p>
+            </section>
+
+            <section>
+                <h2>Step 1: Check What's Using Space</h2>
+                <p>Before deleting anything, you need to understand where your disk space went. The first command everyone should know is <code>df</code> which shows disk free space:</p>
+
+                <div class="command-box">
+                    <code>df -h</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Shows how full each partition is in human-readable format (GB, MB)</p>
+                </div>
+
+                <p>Look for lines showing 90% or higher usage. The main one is usually mounted at / (your root partition). If you see something like "Use% 95%" or higher, that's your problem.</p>
+
+                <p>Now let's find the big directories consuming space:</p>
+
+                <div class="command-box">
+                    <code>du -h --max-depth=1 / 2>/dev/null | sort -hr | head -20</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Shows the 20 largest directories on your system</p>
+                </div>
+
+                <p>This command scans your entire system and shows you which folders are biggest. The <code>2>/dev/null</code> part hides permission errors so you only see useful results. Common culprits are /home (your personal files), /var (logs and caches), and /usr (installed programs).</p>
+            </section>
+
+            <section>
+                <h2>Step 2: Clean Package Manager Cache</h2>
+                <p>Package managers download installation files and often keep them around "just in case." These can consume several gigabytes for no good reason.</p>
+
+                <h3>For Ubuntu, Mint, and Debian-based systems:</h3>
+
+                <div class="command-box">
+                    <code>sudo apt clean</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Removes all downloaded package files from cache</p>
+                </div>
+
+                <div class="command-box">
+                    <code>sudo apt autoclean</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Removes only outdated package files</p>
+                </div>
+
+                <div class="command-box">
+                    <code>sudo apt autoremove</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Removes packages that were installed as dependencies but are no longer needed</p>
+                </div>
+
+                <p>These three commands together can easily free up 1-5GB depending on how long it's been since you last ran them.</p>
+
+                <h3>For Fedora and Red Hat-based systems:</h3>
+
+                <div class="command-box">
+                    <code>sudo dnf clean all</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Cleans all cached package data</p>
+                </div>
+            </section>
+
+            <section>
+                <h2>Step 3: Remove Old Kernels</h2>
+                <p>Every time your system updates the kernel, it keeps the old ones "just in case." After several updates, you might have 5-10 old kernels taking up 200-500MB each.</p>
+
+                <p>First, check which kernel you're currently using (so you don't delete it!):</p>
+
+                <div class="command-box">
+                    <code>uname -r</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Shows your current kernel version</p>
+                </div>
+
+                <p>To see all installed kernels:</p>
+
+                <div class="command-box">
+                    <code>dpkg --list | grep linux-image</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Lists all kernel versions on your system</p>
+                </div>
+
+                <p>To automatically remove old kernels and keep only the current one plus the previous version (recommended for safety):</p>
+
+                <div class="command-box">
+                    <code>sudo apt autoremove --purge</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Removes old kernels automatically</p>
+                </div>
+
+                <div class="tip-box">
+                    <p><strong>Safety Tip:</strong> Always keep at least one previous kernel version. If the latest kernel has issues, you can boot into the older one from the Grub menu (Advanced Options).</p>
+                </div>
+            </section>
+
+            <section>
+                <h2>Step 4: Clear System Logs</h2>
+                <p>System logs in /var/log can grow enormous over time, especially if you've had errors or warnings. Logs older than a few weeks are rarely useful.</p>
+
+                <p>Check log size first:</p>
+
+                <div class="command-box">
+                    <code>sudo du -sh /var/log</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Shows total size of log directory</p>
+                </div>
+
+                <p>If it's more than 500MB, you should clean it. To clear old journal logs (systemd systems):</p>
+
+                <div class="command-box">
+                    <code>sudo journalctl --vacuum-time=7d</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Keeps only the last 7 days of logs</p>
+                </div>
+
+                <p>Or limit by size:</p>
+
+                <div class="command-box">
+                    <code>sudo journalctl --vacuum-size=100M</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Keeps only 100MB of most recent logs</p>
+                </div>
+
+                <p>For older log files:</p>
+
+                <div class="command-box">
+                    <code>sudo find /var/log -type f -name "*.log" -mtime +30 -delete</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Deletes .log files older than 30 days</p>
+                </div>
+
+                <div class="warning-box">
+                    <p><strong>Warning:</strong> Only delete logs if you're not currently troubleshooting a problem! Logs are valuable for diagnosing issues. But logs from months ago are rarely useful.</p>
+                </div>
+            </section>
+
+            <section>
+                <h2>Step 5: Empty Trash</h2>
+                <p>This seems obvious but many people forget. Your trash can contain gigabytes of "deleted" files that are still taking up space.</p>
+
+                <div class="command-box">
+                    <code>rm -rf ~/.local/share/Trash/*</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Permanently deletes everything in your trash</p>
+                </div>
+
+                <p>Or use your file manager's "Empty Trash" option which is safer and more visual.</p>
+            </section>
+
+            <section>
+                <h2>Step 6: Find and Remove Large Files</h2>
+                <p>Sometimes you have a few huge files you forgot about. Let's find files larger than 100MB:</p>
+
+                <div class="command-box">
+                    <code>find ~/ -type f -size +100M -exec ls -lh {} \; 2>/dev/null | awk '{print $5, $9}'</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Lists all files in your home directory larger than 100MB</p>
+                </div>
+
+                <p>This shows you the size and location of each large file. Common suspects include:</p>
+                <p>- Old downloads you forgot about</p>
+                <p>- Video files in ~/Videos</p>
+                <p>- Virtual machine images (.vdi, .vmdk files)</p>
+                <p>- Large database dumps or backups</p>
+
+                <p>For a more user-friendly visual approach, you can install and use a tool called ncdu (NCurses Disk Usage):</p>
+
+                <div class="command-box">
+                    <code>sudo apt install ncdu<br>
+ncdu ~</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Installs and runs an interactive disk usage analyzer</p>
+                </div>
+
+                <p>ncdu shows you a navigable view of what's using space. You can move through directories with arrow keys and press 'd' to delete files right there.</p>
+            </section>
+
+            <section>
+                <h2>Step 7: Clean Browser Cache</h2>
+                <p>Web browsers cache tons of data. Firefox and Chrome can easily use 1-2GB of cache.</p>
+
+                <p>For Firefox, the cache is usually in:</p>
+
+                <div class="command-box">
+                    <code>rm -rf ~/.cache/mozilla/firefox/*.default*/cache2/*</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Clears Firefox cache</p>
+                </div>
+
+                <p>For Chrome/Chromium:</p>
+
+                <div class="command-box">
+                    <code>rm -rf ~/.cache/google-chrome/Default/Cache/*<br>
+rm -rf ~/.cache/chromium/Default/Cache/*</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Clears Chrome/Chromium cache</p>
+                </div>
+
+                <p>Or just clear cache through the browser settings (Ctrl+Shift+Delete in most browsers).</p>
+            </section>
+
+            <section>
+                <h2>Step 8: Remove Unused Applications</h2>
+                <p>Applications you installed once and never use are wasting space. To see all installed packages sorted by size:</p>
+
+                <div class="command-box">
+                    <code>dpkg-query -W -f='${Installed-Size;8}  ${Package}\n' | sort -n | tail -50</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Shows the 50 largest installed packages</p>
+                </div>
+
+                <p>To remove a package you don't need:</p>
+
+                <div class="command-box">
+                    <code>sudo apt remove package-name<br>
+sudo apt purge package-name</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Remove removes the package; purge also removes its config files</p>
+                </div>
+            </section>
+
+            <section>
+                <h2>Step 9: Clear Thumbnail Cache</h2>
+                <p>Your system generates thumbnails for images and videos. Over time, this cache can grow to hundreds of megabytes.</p>
+
+                <div class="command-box">
+                    <code>rm -rf ~/.cache/thumbnails/*</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Clears all thumbnail caches (they'll regenerate as needed)</p>
+                </div>
+            </section>
+
+            <section>
+                <h2>Quick Cleanup Script</h2>
+                <p>Here's a quick script that runs all the safe cleanup commands at once. You can save this and run it monthly:</p>
+
+                <div class="command-box">
+                    <code>#!/bin/bash<br>
+echo "Starting system cleanup..."<br>
+sudo apt clean<br>
+sudo apt autoclean<br>
+sudo apt autoremove --purge -y<br>
+sudo journalctl --vacuum-time=7d<br>
+rm -rf ~/.cache/thumbnails/*<br>
+echo "Cleanup complete! Check freed space with: df -h"</code>
+                </div>
+            </section>
+
+            <section>
+                <div class="tip-box">
+                    <p><strong>Pro Tip:</strong> Set up a monthly reminder to run cleanup commands. Just 5 minutes of maintenance every month prevents the "disk full" emergency. You can even add the cleanup script to cron to run automatically: <code>crontab -e</code> and add: <code>0 0 1 * * /path/to/cleanup-script.sh</code> to run it on the first day of each month.</p>
+                </div>
+            </section>
+
+            <section>
+                <h2>Emergency: System Completely Full</h2>
+                <p>If your disk is 100% full and the system is barely functioning, you need aggressive action:</p>
+
+                <p>1. Boot into recovery mode (select it from Grub menu)</p>
+                <p>2. Run: <code>sudo apt clean</code> to immediately free some space</p>
+                <p>3. Delete largest log files: <code>sudo rm /var/log/*.log.1</code></p>
+                <p>4. Empty trash: <code>rm -rf ~/.local/share/Trash/*</code></p>
+                <p>5. Reboot normally and run the full cleanup process</p>
+            </section>
+
+            <nav style="margin-top: var(--space-xl); padding-top: var(--space-lg); border-top: 1px solid var(--border-color);">
+                <a href="../index.html" class="back-link">← Back to Home</a> | 
+                <a href="tips.html" class="back-link">View All Tips</a>
+            </nav>
+        </article>
+    </main>
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; 2026 Linux Knowledge Hub. Created to help Linux learners worldwide.</p>
+        </div>
+    </footer>
+</body>
+</html>

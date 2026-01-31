@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn how Linux file permissions work and master the chmod command with clear examples.">
+    <title>Understanding File Permissions (chmod) - Linux Knowledge Hub</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .article-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .article-header {
+            margin-bottom: var(--space-xl);
+            padding-bottom: var(--space-md);
+            border-bottom: 2px solid var(--border-color);
+        }
+        .article-meta {
+            display: flex;
+            gap: var(--space-md);
+            margin-top: var(--space-sm);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        .article-content h2 {
+            margin-top: var(--space-xl);
+            padding-top: var(--space-md);
+        }
+        .article-content h3 {
+            margin-top: var(--space-lg);
+        }
+        .command-box {
+            background-color: var(--surface-light);
+            border-left: 4px solid var(--success);
+            padding: var(--space-md);
+            border-radius: var(--radius);
+            margin: var(--space-md) 0;
+        }
+        .command-box code {
+            color: var(--success);
+            font-weight: 600;
+        }
+        .warning-box {
+            background-color: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            padding: var(--space-md);
+            border-radius: var(--radius);
+            margin: var(--space-md) 0;
+        }
+        .warning-box strong {
+            color: #ef4444;
+        }
+        .tip-box {
+            background-color: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--success);
+            padding: var(--space-md);
+            border-radius: var(--radius);
+            margin: var(--space-md) 0;
+        }
+        .tip-box strong {
+            color: var(--success);
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: var(--space-xl);
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .back-link:hover {
+            color: var(--primary-dark);
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <h1 class="site-title">Linux Knowledge Hub</h1>
+            <p class="site-tagline">Master Linux, one command at a time</p>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="commands.html" class="active">Commands</a></li>
+                    <li><a href="tips.html">System Tips</a></li>
+                    <li><a href="upgrades.html">Upgrade Tricks</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main class="main-content">
+        <article class="container article-content">
+            <header class="article-header">
+                <h1>Understanding File Permissions (chmod)</h1>
+                <div class="article-meta">
+                    <span>📅 January 30, 2026</span>
+                    <span>⏱️ 5 min read</span>
+                    <span>🏷️ Commands</span>
+                </div>
+            </header>
+            <section>
+                <p>If you've ever seen something like <code>rwxr-xr-x</code> and wondered what cryptic magic was happening, you're not alone. Linux file permissions seem mysterious at first, but they follow a beautifully logical pattern.</p>
+            </section>
+            <section>
+                <h2>What Are File Permissions?</h2>
+                <p>Every file and directory in Linux has three types of permissions that control who can do what with that file. The owner of the file has full control. A group of users might have limited access. Everyone else might only be able to look around.</p>
+                <p>The three permissions are read, write, and execute. Reading means you can view the contents of a file. Writing means you can modify it or delete it. Executing means you can run the file as a program or enter a directory.</p>
+            </section>
+            <section>
+                <h2>Reading Permission Strings</h2>
+                <p>When you type <code>ls -l</code> in a terminal, you see something like this:</p>
+                <div class="command-box">
+                    <code>-rwxr-xr-x 1 john developers 4096 Jan 30 10:30 script.sh</code>
+                </div>
+                <p>Let's break down what <code>rwxr-xr-x</code> means. Those nine letters form three groups of three characters each. The first group shows what the owner can do, the second shows what members of the file's group can do, and the third shows what everyone else can do.</p>
+            </section>
+            <section>
+                <h2>Using chmod to Change Permissions</h2>
+                <p>The chmod command lets you change these permissions. There are two ways to use it: symbolic mode and numeric mode.</p>
+                <h3>Symbolic Mode</h3>
+                <div class="command-box">
+                    <code>chmod u+x script.sh</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">This adds execute permission for the user (owner)</p>
+                </div>
+                <div class="command-box">
+                    <code>chmod g-w document.txt</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">This removes write permission from the group</p>
+                </div>
+                <h3>Numeric Mode</h3>
+                <p>Numeric mode uses numbers to represent permissions. Each permission has a value: read is 4, write is 2, and execute is 1. You add these numbers together for each group of users.</p>
+                <div class="command-box">
+                    <code>chmod 755 script.sh</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Owner gets rwx (7), group gets r-x (5), others get r-x (5)</p>
+                </div>
+                <div class="command-box">
+                    <code>chmod 644 document.txt</code>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary);">Owner gets rw- (6), group gets r-- (4), others get r-- (4)</p>
+                </div>
+            </section>
+            <section>
+                <div class="warning-box">
+                    <p><strong>Important Warning:</strong> Be extremely careful when using chmod recursively with the -R flag. Running something like <code>chmod -R 777 /</code> on your root directory would give everyone full permissions to everything and could make your system completely insecure or even unbootable.</p>
+                </div>
+            </section>
+            <section>
+                <div class="tip-box">
+                    <p><strong>Pro Tip:</strong> If you're not sure what permissions a file needs, start restrictive and add permissions as needed rather than starting with everything open. It's easier and safer to grant access than to lock things down after the fact.</p>
+                </div>
+            </section>
+            <nav style="margin-top: var(--space-xl); padding-top: var(--space-lg); border-top: 1px solid var(--border-color);">
+                <a href="../index.html" class="back-link">← Back to Home</a>
+            </nav>
+        </article>
+    </main>
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; 2026 Linux Knowledge Hub. Created to help Linux learners worldwide.</p>
+        </div>
+    </footer>
+</body>
+</html>
